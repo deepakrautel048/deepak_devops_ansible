@@ -1,0 +1,20 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for base
+- name: install apache httpd
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+    update_cache: yes
+- name: start apache httpd service
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: yes
+- name: Copy an index file
+  ansible.builtin.copy:
+    dest: /var/www/html/index.html
+    content: "<h1>hi Welcome to Ansible Managed Apache Server by Deepak Rautela</h1>"
+    owner: root
+    group: root
+    mode: '0644'
