@@ -1,0 +1,12 @@
+---
+name: Deepak Rautela
+title: Software Engineer
+Age: 30
+Working:  true
+tasks:
+  - name: "Implement ansible playbook"
+    status: In Progress
+    target_date: 2025-11-15
+  - name: "Fix bugs in development Branch"
+    status: Pending
+    target_date: 2025-11-20
