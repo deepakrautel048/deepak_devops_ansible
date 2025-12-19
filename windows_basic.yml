@@ -14,10 +14,10 @@
          dest: C:\temp-area\testFile.txt
 
      - name: check if pyCharm has been installed before
-       win_shell: Get-Package | select name | findstr /i pyCharm
+       win_shell: Get-Package | Select-Object -ExpandProperty Name | findstr /i PyCharm
        register: pycharm_presence
        changed_when: false
-       failed_when: pycharm_presence.stderr
+       failed_when: false
 
      - name: Install pyCharm
        win_package:
@@ -26,4 +26,4 @@
          arguments:
          - /S
          - /D=C:\DataHubCore\Pycharm
-       when: not pycharm_presence.stdout_lines
+       when: pycharm_presence.stdout == ""
