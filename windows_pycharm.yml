@@ -1,5 +1,5 @@
 ---
-- name: Manage PyCharm versions on Windows
+- name: Manage PyCharm on Windows
   hosts: windows
   gather_facts: no
 
@@ -8,8 +8,8 @@
       win_shell: |
         Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
                          HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |
-        Where-Object { $_.DisplayName -match "PyCharm" } |
-        Select DisplayName
+        Where-Object { $_.DisplayName -like "PyCharm*" } |
+        Select-Object -ExpandProperty DisplayName
       register: pycharm_list
       changed_when: false
       failed_when: false
@@ -18,28 +18,28 @@
       debug:
         var: pycharm_list.stdout_lines
 
-    # --------------------------------------
-    # UNINSTALL ONLY IF OLD VERSION EXISTS
-    # --------------------------------------
+    # -------------------------------------------------
+    # UNINSTALL all PyCharm versions EXCEPT 2025
+    # -------------------------------------------------
     - name: Uninstall PyCharm versions older than 2025
       win_shell: |
         Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
                          HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |
-        Where-Object { $_.DisplayName -match "PyCharm" -and $_.DisplayName -match '(\d{4})' -and [int]$matches[1] -lt 2025 } |
-        ForEach-Object { Start-Process "cmd.exe" "/c `"$($_.UninstallString)`" /S" -Wait }
+        Where-Object { $_.DisplayName -like "PyCharm*" -and $_.DisplayName -notlike "*2025*" } |
+        ForEach-Object { & "$($_.UninstallString)" /S }
       args:
         executable: powershell.exe
       when: pycharm_list.stdout is search("PyCharm") and
             pycharm_list.stdout is not search("2025")
 
-    # --------------------------------------
-    # INSTALL ONLY IF 2025 NOT PRESENT
-    # --------------------------------------
-    - name: Install PyCharm 2025.3
+    # -------------------------------------------------
+    # INSTALL PyCharm 2025 ONLY if missing
+    # -------------------------------------------------
+    - name: Install PyCharm 2025
       win_package:
         path: C:\temp-area\pycharm-2025.3.exe
         state: present
         arguments:
           - /S
-          - /D=C:\Program Files\JetBrains\PyCharm 2025.3
+          - /D=C:\Program Files\JetBrains\PyCharm 2025
       when: pycharm_list.stdout is not search("2025")
