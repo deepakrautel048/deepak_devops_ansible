@@ -20,14 +20,23 @@
 
     - name: Uninstall PyCharm versions older than 2025
       win_shell: |
-        Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
-                         HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |
-        Where-Object { $_.DisplayName -like 'PyCharm*' -and $_.DisplayName -notlike '*2025*' -and $_.UninstallString } |
-        ForEach-Object { & "$($_.UninstallString)" /S }
+        $apps = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*,
+                                 HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |
+                Where-Object {
+                  $_.DisplayName -like 'PyCharm*' -and
+                  $_.DisplayName -notlike '*2025*' -and
+                  $_.UninstallString
+                }
+
+        foreach ($app in $apps) {
+          $uninst = $app.UninstallString
+          Start-Process -FilePath $uninst -ArgumentList '/S' -Wait
+        }
       args:
         executable: powershell.exe
-      when: pycharm_list.stdout is search("PyCharm") and
-            pycharm_list.stdout is not search("2025")
+      when: >
+        pycharm_list.stdout is search("PyCharm")
+        and pycharm_list.stdout is not search("2025")
 
     - name: Install PyCharm 2025
       win_package:
