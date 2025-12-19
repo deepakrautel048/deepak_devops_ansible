@@ -1,0 +1,14 @@
+---
+ - name: windows basic authentication
+   hosts: windows
+   gather_facts: no
+   tasks:
+     - name: Create Folder
+       win_file:
+         path: C:\AnsibleTest
+         state: directory
+    
+     - name: create File
+       win_copy:
+         content: "This is atest file created"
+         dest: C:\AnsibleTest\testFile.txt
