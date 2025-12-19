@@ -1,0 +1,35 @@
+---
+- name: windows basic authentication
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Check PyCharm installed version
+      win_shell: |
+        Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* ,
+                         HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |
+        Where-Object { $_.DisplayName -match "PyCharm" } |
+        Select-Object -First 1 -ExpandProperty DisplayVersion
+      register: pycharm_version
+      changed_when: false
+      failed_when: false
+
+    - name: DEBUG | PyCharm version found
+      debug:
+        msg: "Detected PyCharm version: {{ pycharm_version.stdout | default('Not installed') }}"
+
+    - name: Uninstall PyCharm if version is older than 2025
+      win_shell: |
+        if ("{{ pycharm_version.stdout }}" -match '^(\d{4})' -and [int]$matches[1] -lt 2025) {
+          Get-Package -Name "*PyCharm*" -ErrorAction SilentlyContinue | Uninstall-Package -Force
+        }
+      when: pycharm_version.stdout != ""
+
+    - name: Install PyCharm 2025.3
+      win_package:
+        path: C:\temp-area\pycharm-2025.3.exe
+        state: present
+        arguments:
+          - /S
+          - /D=C:\DataHubCore\Pycharm
+      when: pycharm_version.stdout == "" or pycharm_version.stdout is not search("^2025")
