@@ -15,10 +15,10 @@
 
      - name: check if pyCharm has been installed before
        win_shell: Get-Package | select name | findstr /i pyCharm
-       register: pyCharm_presence
+       register: pycharm_presence
        changed_when: false
-       failed_when: pyCharm_presence.stderr
-    
+       failed_when: pycharm_presence.stderr
+
      - name: Install pyCharm
        win_package:
          state: present
@@ -26,4 +26,4 @@
          arguments:
          - /S
          - /D=C:\DataHubCore\Pycharm
-       when: not pyCharm_presence.stdout_lines
+       when: not pycharm_presence.stdout_lines
