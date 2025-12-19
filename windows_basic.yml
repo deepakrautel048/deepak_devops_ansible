@@ -12,20 +12,18 @@
        win_copy:
          content: "This is atest file created"
          dest: C:\temp-area\testFile.txt
-  
-  - block:
-    - name: check if pyCharm has been installed before
-      win_shell: Get-Package | select name | findstr /i pyCharm
-      register: pyCharm_presence
-      changed_when: false
-      failed_when: pyCharm_presence.stderr
+
+     - name: check if pyCharm has been installed before
+       win_shell: Get-Package | select name | findstr /i pyCharm
+       register: pyCharm_presence
+       changed_when: false
+       failed_when: pyCharm_presence.stderr
     
-    - name: Install pyCharm
-      win_package:
-        state: present
-        path: C:\temp-area\pycharm-professional-2021.3.3.exe
-        arguments:
-        - /S
-        - /D=C:\DataHubCore\Pycharm
-      when: not pyCharm_presence.stdout_lines
-    tags: pycharm
+     - name: Install pyCharm
+       win_package:
+         state: present
+         path: C:\temp-area\pycharm-professional-2021.3.3.exe
+         arguments:
+         - /S
+         - /D=C:\DataHubCore\Pycharm
+       when: not pyCharm_presence.stdout_lines
