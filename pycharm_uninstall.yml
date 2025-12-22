@@ -5,7 +5,7 @@
    tasks:
      - name: Check if PyCharm uninstaller exists
        ansible.windows.win_shell: |
-         if (Test-Path "C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe") {
+         if (Test-Path "C:\Program Files\JetBrains\PyCharm 2025.3\bin\Uninstall.exe") {
           Write-Output "FOUND"
          } else {
           Write-Output "NOT_Available"
@@ -16,7 +16,7 @@
      - name: uninstall pycharm version
        ansible.windows.win_shell: |
          Start-Process `
-           -FilePath "C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe" `
+           -FilePath "C:\Program Files\JetBrains\PyCharm 2025.3\bin\Uninstall.exe" `
            -ArgumentList "/S" `
            -Wait `
            -NoNewWindow
