@@ -3,16 +3,20 @@
    hosts: windows
    gather_facts: no
    tasks:
+    #  - name: uninstall pycharm
+    #    ansible.windows.win_package:
+    #      path: 'C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe'
+    #      product_id: 'PyCharm 2024.3.6'
+    #      arguments: 
+    #        - /S
+    #      state: absent
+    #    register: pycharm_uninstall
+    #    # become: true
+    #    # become_method: runas
      - name: uninstall pycharm
-       ansible.windows.win_package:
-         path: 'C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe'
-         product_id: 'PyCharm 2024.3.6'
-         arguments: 
-           - /S
-         state: absent
+         ansible.windows.win_command:
+           cmd: '"C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe" /S'
        register: pycharm_uninstall
-       # become: true
-       # become_method: runas
 
      - name: debug uninstallation
        debug:
