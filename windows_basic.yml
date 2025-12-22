@@ -1,29 +1,21 @@
 ---
- - name: windows basic authentication
-   hosts: windows
-   gather_facts: no
-   tasks:
-     - name: Create Folder
-       win_file:
-         path: C:\temp-area
-         state: directory
-    
-     - name: create File
-       win_copy:
-         content: "This is atest file created"
-         dest: C:\temp-area\testFile.txt
+- name: windows basic authentication
+  hosts: windows
+  gather_facts: no
 
-     - name: check if pyCharm has been installed before
-       win_shell: Get-Package | Select-Object -ExpandProperty Name | findstr /i PyCharm
-       register: pycharm_presence
-       changed_when: false
-       failed_when: false
+  tasks:
+    - name: check if pyCharm has been installed before
+      win_shell: 'Get-Package | Select-Object -ExpandProperty Name | findstr /i PyCharm'
+      register: pycharm_presence
+      changed_when: false
+      # keep it false to avoid failing when findstr returns 1 (not found)
+      failed_when: false
 
-     - name: Install pyCharm
-       win_package:
-         state: present
-         path: C:\temp-area\pycharm-professional-2021.3.3.exe
-         arguments:
-         - /S
-         - /D=C:\DataHubCore\Pycharm
-       when: pycharm_presence.stdout == ""
+    - name: Install pyCharm
+      win_package:
+        state: present
+        path: 'C:\temp-area\pycharm-professional-2021.3.3.exe'
+        arguments:
+          - /S
+          - '/D=C:\DataHubCore\Pycharm'
+      when: pycharm_presence.stdout_lines | default([]) | length == 0
