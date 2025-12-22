@@ -16,12 +16,13 @@
      - name: uninstall pycharm version
        ansible.windows.win_shell: |
          Start-Process `
-          -FilePath "C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe" `
-          -ArgumentList "/S" `
-          -Wait `
-          -NoNewWindow
-       register: pycharm_uninstall
+           -FilePath "C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe" `
+           -ArgumentList "/S" `
+           -Wait `
+           -NoNewWindow
        when: "'FOUND' in pycharm_check.stdout"
+       register: pycharm_uninstall
+       
      - name: debug uninstallation
        debug:
          var: pycharm_uninstall
