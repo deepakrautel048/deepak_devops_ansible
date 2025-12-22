@@ -14,7 +14,7 @@
     #    # become: true
     #    # become_method: runas
      - name: uninstall pycharm
-         ansible.windows.win_command:
+         ansible.windows.win_command: 
            cmd: '"C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe" "/S"'
        register: pycharm_uninstall
 
