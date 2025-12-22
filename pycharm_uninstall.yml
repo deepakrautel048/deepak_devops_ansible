@@ -1,0 +1,17 @@
+---
+ - name: windows basic authentication
+   hosts: windows
+   gather_facts: no
+   tasks:
+     - name: uninstall pycharm
+       ansible.windows.win_package:
+         path: C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe
+         arguments: /S
+         state: absent
+         register: pycharm_uninstall
+       become: true
+       become_method: runas
+
+     - name: debug uninstallation
+       debug:
+         var: pycharm_uninstall
