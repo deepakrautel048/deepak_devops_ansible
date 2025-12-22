@@ -8,7 +8,7 @@
          if (Test-Path "C:\Program Files\JetBrains\PyCharm 2024.3.6\bin\Uninstall.exe") {
           Write-Output "FOUND"
          } else {
-          Write-Output "NOT_FOUND"
+          Write-Output "NOT_Available"
          }
        register: pycharm_check
        changed_when: false
