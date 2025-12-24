@@ -14,7 +14,7 @@
     - name: Install pyCharm
       win_package:
         state: present
-        path: 'C:\temp-area\pycharm-professional-2021.3.3.exe'
+        path: 'C:\temp-area\pycharm-2025.3.exe'
         arguments:
           - /S
           - '/D=C:\DataHubCore\Pycharm'
