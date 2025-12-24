@@ -16,10 +16,12 @@
         if (Test-Path "C:\DataHubCore\PyCharm") { 
           Get-Process pycharm*,jetbrains* -ErrorAction SilentlyContinue |
           Stop-Process -Force -ErrorAction SilentlyContinue
-          Rename-Item -Path "C:\DataHubCore\PyCharm" -NewName ('PyCharm.old.{0}' -f (Get-Date -Format 'ddMMyyyyHHmmss')) -Force 
+          #Rename-Item -Path "C:\DataHubCore\PyCharm" -NewName ('PyCharm.old.{0}' -f (Get-Date -Format 'ddMMyyyyHHmmss')) -Force 
+          Remove-Item -Path "C:\DataHubCore\PyCharm" -Recurse -Force -ErrorAction SilentlyContinue
           }
       args:
         executable: powershell.exe
+      ignore_errors: true
       when: pycharm_presence.stdout_lines | default([]) | length == 0
 
     - name: Install pyCharm
